@@ -77,8 +77,8 @@ with st.sidebar:
     """---"""
 uploaded_file = st.sidebar.file_uploader("Upload JSON or TXT file", type=["json", "txt"])
 
-topic = st.sidebar.text_input("Enter a Topic",placeholder="Hit ↩️Enter")
-number_of_nodes = st.sidebar.number_input("Number of Nodes to Identify ", min_value=1, max_value=100, value=10)
+# # topic = st.sidebar.text_input("Enter a Topic",placeholder="Hit ↩️Enter")
+# number_of_nodes = st.sidebar.number_input("Number of Nodes to Identify ", min_value=1, max_value=100, value=10)
 
 if uploaded_file is not None:
     # if its a json file convert it to string and replace the session state
