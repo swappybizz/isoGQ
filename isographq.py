@@ -13,7 +13,6 @@ def generate_text(prompt:str):
     completion = client.chat.completions.create(
         model="gpt-4-turbo-preview",
         messages=[
-
             {
                 "role": "user",
                 "content": prompt,
