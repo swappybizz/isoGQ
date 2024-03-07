@@ -71,6 +71,13 @@ st.sidebar.title("ISOGRAPHQ")
 # st.session_state["file_contents"] if not already in session state, initialize it to an empty string
 if "file_contents" not in st.session_state:
     st.session_state["file_contents"] = ""
+    
+if "nodes" not in st.session_state:
+    st.session_state["nodes"] = ""
+    
+if "relationships" not in st.session_state:
+    st.session_state["relationships"] = ""
+    
 
 with st.sidebar:
     "Isomorphic Graph Querying"
@@ -120,11 +127,24 @@ if len(st.session_state["file_contents"]) > 0:
         col1, col2 = st.columns(2)
         with col1:
             st.write("Nodes")
+            st.session_state["nodes"] = nodes
             print(nodes)
             st.write(nodes)
         with col2:
             st.write("Relationships")
+            st.session_state["relationships"] = relationships
             print(relationships)
             st.write(relationships)
+    
+    
+if len(st.session_state["nodes"]) > 0:
+    with st.sidebar:
+        # add buttoon to download the nodes as a text file
+        st.download_button("Download Nodes", st.session_state["nodes"], file_name="nodes.txt", mime="text/plain")
+        
+if len(st.session_state["relationships"]) > 0:
+    with st.sidebar:
+        # add button to download the relationships as a text file
+        st.download_button("Download Relationships", st.session_state["relationships"], file_name="relationships.txt", mime="text/plain")
         
 
