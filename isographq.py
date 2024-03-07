@@ -81,9 +81,16 @@ topic = st.sidebar.text_input("Enter a Topic",placeholder="Hit ↩️Enter")
 number_of_nodes = st.sidebar.number_input("Number of Nodes to Identify ", min_value=1, max_value=100, value=10)
 
 if uploaded_file is not None:
-    # uploaded file is a txt
-    file_contents = uploaded_file.getvalue().decode("utf-8")
-    st.session_state["file_contents"] = file_contents
+    # if its a json file convert it to string and replace the session state
+    if uploaded_file.type == "application/json":
+        file_contents = str(uploaded_file.getvalue())
+        st.session_state["file_contents"] = file_contents
+        
+    elif uploaded_file.type == "text/plain":
+        file_contents = uploaded_file.getvalue().decode("utf-8")
+        st.session_state["file_contents"] = file_contents
+    
+    
 with st.sidebar.expander("Suggest Changes"):
     suggestion1 = st.text_area("Suggestion 1")
     suggestion2 = st.text_area("Suggestion 2")
