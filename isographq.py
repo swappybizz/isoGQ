@@ -120,9 +120,11 @@ if len(st.session_state["file_contents"]) > 0:
         col1, col2 = st.columns(2)
         with col1:
             st.write("Nodes")
+            print(nodes)
             st.write(nodes)
         with col2:
             st.write("Relationships")
+            print(relationships)
             st.write(relationships)
         
 
