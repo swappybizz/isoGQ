@@ -13,10 +13,7 @@ def generate_text(prompt:str):
     completion = client.chat.completions.create(
         model="gpt-4-turbo-preview",
         messages=[
-            {
-                "role": "system",  
-                "content": "Du er en årvåken assistent for informasjonssamling og revisjon.. Du forstår alle språk, men svarer kun på norsk."
-            },
+
             {
                 "role": "user",
                 "content": prompt,
@@ -126,16 +123,16 @@ if len(st.session_state["file_contents"]) > 0:
         relationships = extract_node_relationships(st.session_state["file_contents"])
         col1, col2 = st.columns(2)
         with col1:
-            st.write("Nodes")
-            st.session_state["nodes"] = nodes
-            # print(nodes)
-            st.code(nodes)
+            with st.container():
+                st.write("Nodes")
+                st.session_state["nodes"] = nodes
+                st.code(nodes)
         with col2:
-            st.write("Relationships")
-            st.session_state["relationships"] = relationships
-            # print(relationships)
-            st.code(relationships)
-    
+            with st.container():
+                st.write("Relationships")
+                st.session_state["relationships"] = relationships
+                st.code(relationships)
+                
     
         
 
