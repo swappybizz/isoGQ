@@ -129,22 +129,13 @@ if len(st.session_state["file_contents"]) > 0:
             st.write("Nodes")
             st.session_state["nodes"] = nodes
             print(nodes)
-            st.write(nodes)
+            st.code(nodes, language='rust')
         with col2:
             st.write("Relationships")
             st.session_state["relationships"] = relationships
             print(relationships)
-            st.write(relationships)
+            st.code(relationships, language='rust')
     
     
-if len(st.session_state["nodes"]) > 0:
-    with st.sidebar:
-        # add buttoon to download the nodes as a text file
-        st.download_button("Download Nodes", st.session_state["nodes"], file_name="nodes.txt", mime="text/plain")
-        
-if len(st.session_state["relationships"]) > 0:
-    with st.sidebar:
-        # add button to download the relationships as a text file
-        st.download_button("Download Relationships", st.session_state["relationships"], file_name="relationships.txt", mime="text/plain")
         
 
