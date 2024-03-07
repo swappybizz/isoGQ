@@ -128,13 +128,13 @@ if len(st.session_state["file_contents"]) > 0:
         with col1:
             st.write("Nodes")
             st.session_state["nodes"] = nodes
-            print(nodes)
-            st.code(nodes, language='rust')
+            # print(nodes)
+            st.code(nodes)
         with col2:
             st.write("Relationships")
             st.session_state["relationships"] = relationships
-            print(relationships)
-            st.code(relationships, language='rust')
+            # print(relationships)
+            st.code(relationships)
     
     
         
