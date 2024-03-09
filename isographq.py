@@ -169,9 +169,9 @@ def extract_node_relationships(cypher_string):
     return [(match.group('source'), match.group('target'), match.group('relation')) for match in relationship_pattern.finditer(cypher_string)]
 
 
-st.set_page_config(page_title="ISOGRAPHQ", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="GraphMyInterview", page_icon="🔍", layout="wide", initial_sidebar_state="expanded")
 
-st.sidebar.title("ISOGRAPHQ")
+st.sidebar.title("GraphMyInterview")
 # st.session_state["file_contents"] if not already in session state, initialize it to an empty string
 if "file_contents" not in st.session_state:
     st.session_state["file_contents"] = ""
