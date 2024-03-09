@@ -2,6 +2,10 @@ import streamlit as st
 from openai import OpenAI
 import re,os
 
+import math
+import networkx as nx
+import matplotlib.pyplot as plt
+import random
 
 def generate_text(prompt:str):
     print("§§§§ $$$ CAUTION: A COSTING CALL#### IS BEING MADE $$$ §§§§")
@@ -22,7 +26,6 @@ def generate_text(prompt:str):
     # print(type(completion.choices[0].message.content))
     return str(completion.choices[0].message.content)
 
-# Define function to extract relationships
 def extract_relationship(conversation_data: str):
     
     prompt = f"""
@@ -110,11 +113,100 @@ with st.sidebar:
 
 
 
+
+
+def draw_graph_in_grid_layout(data):
+    if "```cypher" in data:
+        lines_that_start_with_create = [line for line in data.split("\n") if line.startswith("CREATE")]
+        node_data = []  
+        for line in lines_that_start_with_create:
+            node_data.append(line.split("(")[1].split("{")[0])
+    
+    # Ensure only unique nodes are added to the graph
+    unique_node_data = set(node_data)
+    G = nx.Graph()
+    G.add_nodes_from(unique_node_data)
+    
+    # Use the length of unique_node_data for num_nodes
+    num_nodes = len(unique_node_data)
+    grid_size = math.ceil(math.sqrt(num_nodes))
+    spacing = 1
+    node_size = max(100, 10000 // num_nodes)
+    font_size = max(10, 16 // grid_size)
+    
+    # Generate random colors for nodes, matching the number of unique nodes
+    colors = ["#" + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in range(num_nodes)]
+    
+    # Calculate node positions
+    pos = {node: (col * spacing, -row * spacing) for i, node in enumerate(G.nodes()) for row in [i // grid_size] for col in [i % grid_size]}
+    
+    # Visualization with black background
+    plt.figure(figsize=(24, 12), facecolor='black')
+    nx.draw_networkx_nodes(G, pos, node_size=node_size, node_color=colors, alpha=0.9)
+    nx.draw_networkx_labels(G,
+                            pos,
+                            font_size=font_size,
+                            font_color='white',
+                            font_weight='bold',
+                            verticalalignment='top',)
+    plt.axis('off')
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def draw_relationships(data):
+    if "```cypher" in data:
+        lines_that_start_with_merge = [line for line in data.split("\n") if line.startswith("MERGE")]
+        G = nx.Graph()
+        
+        for line in lines_that_start_with_merge:
+            # Using regular expressions to extract node and relationship information
+            entities = re.findall(r"\((.*?)\)", line)
+            relationship = re.search(r"\[(.*?)\]", line)
+            
+            if entities and relationship and len(entities) >= 2:
+                # Extract the first and second entity names
+                firstEntity = entities[0]
+                secondEntity = entities[1]
+                relationshipType = relationship.group(1).split(":")[1] if ':' in relationship.group(1) else relationship.group(1)
+                
+                # Add nodes and edge with relationship type as label
+                G.add_node(firstEntity)
+                G.add_node(secondEntity)
+                G.add_edge(firstEntity, secondEntity, label=relationshipType)
+        
+        # Generate positions for each node using the spring layout for aesthetics
+        pos = nx.spring_layout(G)
+        
+        # Generate random colors for nodes
+        colors = ["#" + ''.join(random.choices('0123456789ABCDEF', k=6)) for _ in G.nodes()]
+        
+        # Visualization
+        plt.figure(figsize=(12, 12), facecolor='black')
+        nx.draw_networkx_nodes(G, pos, node_color=colors, alpha=0.9)
+        nx.draw_networkx_edges(G, pos, edge_color='white', alpha=0.5)
+        nx.draw_networkx_labels(G, pos, font_color='white')
+        
+        # Optionally, draw edge labels to show relationship types
+        edge_labels = nx.get_edge_attributes(G, 'label')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red')
+        
+        plt.axis('off')
+        st.pyplot(plt)
+
+        
+
+
 if len(st.session_state["file_contents"]) > 0:
     nodes = extract_relationship((str(st.session_state["file_contents"])))
     st.session_state["file_contents"] = nodes
     print(nodes)
     # col1, col2 = st.columns(2)
+    with st.expander("Visualize relationships", expanded=True):
+        draw_relationships(st.session_state["file_contents"])
+        
+    
+    with st.expander("Visualize nodes"):
+        draw_graph_in_grid_layout(st.session_state["file_contents"])
+        
     with st.expander("Extracted Nodes and Relationships"):
         st.code(st.session_state["file_contents"], language='cypher')
     with st.expander("Download Neo4j Graph"):
@@ -131,6 +223,8 @@ if len(st.session_state["file_contents"]) > 0:
                 st.write("Relationships")
                 st.session_state["relationships"] = relationships
                 st.code(relationships)
+                
+                
                 
     
         
