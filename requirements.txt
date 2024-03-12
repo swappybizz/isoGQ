@@ -2,3 +2,6 @@ openai
 networkx 
 matplotlib
 numpy
+PyMuPDF
+python-docx
+openpyxl
