@@ -7,8 +7,9 @@ import math
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
-from streamlit_agraph import agraph, Node, Edge, Config
-from streamlit_agraph.config import Config, ConfigBuilder
+
+# from streamlit_agraph import agraph, Node, Edge, Config
+# from streamlit_agraph.config import Config, ConfigBuilder
 
 
 def generate_text(prompt: str):
