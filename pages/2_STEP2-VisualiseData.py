@@ -2,8 +2,6 @@ import streamlit as st
 from openai import OpenAI
 import re, os
 import json
-
-import math
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
